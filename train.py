@@ -15,12 +15,10 @@ from kws.datasets import SpeechCommandDataset
 from kws.augmentations import WaveAugs, LogMelSpec
 from kws.collate_fn import Collator
 
-from kws.sampler.sampler import get_sampler
-from kws.utils.seed_everything import seed_everything
-
+from kws.sampler import *
 from kws.models import *
 from kws.trainer import *
-
+from kws.utils import *
 
 def main(config):
     seed_everything(seed=config.seed)
@@ -79,20 +77,25 @@ def main(config):
         weight_decay=config.weight_decay
     )
 
-    for i in range(config.num_epochs):
-        train_epoch(model, optimizer, train_loader, melspec_train, config.device)
-        auc_fa_fr = validation(model, val_loader, melspec_val, config.device)
-        history["val_auc_fa_fr"].append(auc_fa_fr)
+    with Timer(name=config.model_type, verbose=config.verbose) as _:
+        for i in range(config.num_epochs):
+            train_epoch(model, optimizer, train_loader, melspec_train, config.device)
+            auc_fa_fr = validation(model, val_loader, melspec_val, config.device)
+            history["val_auc_fa_fr"].append(auc_fa_fr)
 
-        clear_output()
+            clear_output()
 
-        plt.plot(history["val_auc_fa_fr"])
-        plt.ylabel("Metric")
-        plt.xlabel("Epoch")
-        plt.show()
+            plt.plot(history["val_auc_fa_fr"])
+            plt.ylabel("Metric")
+            plt.xlabel("Epoch")
+            plt.show()
 
-        if config.verbose:
-            print(f"Epoch {i}: AUC_FA_FR = {auc_fa_fr}")
+            if config.verbose:
+                print(f"Epoch {i}: AUC_FA_FR = {auc_fa_fr}")
+    
+    if config.verbose:
+        print(f"{config.model_type.capitalize()} model's number of parameters: {get_num_params(model)}.")
+        print(f"{config.model_type.capitalize()} model's size in megabytes: {get_size_in_megabytes(model)}.")
 
 
 if __name__ == "__main__":
