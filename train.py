@@ -98,10 +98,10 @@ def main(config):
                 print(f"Epoch {i + 1}: AUC_FA_FR = {auc_fa_fr:.6}")
     
     if config.verbose:
-        print(f"Number of parameters = {get_num_params(model)}.")
-        macs, params = profile(model, (torch.randn(1, 1, 4)))
+        print(f"Number of parameters: {get_num_params(model)}.")
+        macs, params = profile(model, (torch.randn(1, 1, 1, 4)))
         print(params)
-        print(f"Size in megabytes = {get_size_in_megabytes(model):.4}.")
+        print(f"Size in megabytes: {get_size_in_megabytes(model):.4}.")
 
 
 if __name__ == "__main__":
