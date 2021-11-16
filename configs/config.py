@@ -22,9 +22,9 @@ class Config:
 
     # Data processing: Melspectrogram
     sample_rate: int = 16000
-    n_fft: int = 400,
-    win_length: int = 400,
-    hop_length: int = 160,
+    n_fft: int = 400
+    win_length: int = 400
+    hop_length: int = 160
     num_mels: int = 40
 
     # Data processing: Wave augmentations
