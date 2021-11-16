@@ -1,0 +1,11 @@
+torch
+torchvision
+numpy
+pandas
+tqdm
+matplotlib
+
+torchaudio~=0.9.1
+librosa
+torch_audiomentations
+wandb
