@@ -28,7 +28,7 @@ class LogMelSpec:
                 n_fft=config.n_fft,
                 win_length=config.win_length,
                 hop_length=config.hop_length,
-                n_mels=config.n_mels
+                n_mels=config.num_mels
             ).to(config.device)
 
     def __call__(self, batch):
