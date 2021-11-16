@@ -1,10 +1,8 @@
 import torch
 from torch import nn
 
-from configs.config import Config
 
-
-class Attention(nn.Module):
+class AttentionBase(nn.Module):
 
     def __init__(self, hidden_size: int):
         super().__init__()
@@ -21,9 +19,9 @@ class Attention(nn.Module):
         return (input * alpha).sum(dim=-2)
 
 
-class CRNN(nn.Module):
+class CRNNBase(nn.Module):
 
-    def __init__(self, config: Config):
+    def __init__(self, config):
         super().__init__()
         self.config = config
 
@@ -46,7 +44,7 @@ class CRNN(nn.Module):
             batch_first=True
         )
 
-        self.attention = Attention(config.hidden_size)
+        self.attention = AttentionBase(config.hidden_size)
         self.classifier = nn.Linear(config.hidden_size, config.num_classes)
     
     def forward(self, input):

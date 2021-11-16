@@ -25,8 +25,8 @@ def get_auc_FA_FR(probs, labels):
         FA, FR = count_FA_FR(preds, labels)        
         FAs.append(FA)
         FRs.append(FR)
-    # Weplt.plot(FAs, FRs)
-    # Weplt.show()
+    # plt.plot(FAs, FRs)
+    # plt.show()
 
     # ~ area under curve using trapezoidal rule
     return -np.trapz(FRs, x=FAs)

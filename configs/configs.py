@@ -1,11 +1,13 @@
-from typing import Tuple, Union, List, Callable, Optional
+from typing import Tuple
 import dataclasses
 
 import torch
 
 
 @dataclasses.dataclass
-class Config:
+class ConfigBase:
+    model_type: str = "base"
+
     seed: int = 42
     verbose: bool = True
 

@@ -1,5 +1,5 @@
-from kws.models.crnn import CRNN
+from kws.models.crnn_base import CRNNBase
 
 __all__ = [
-    "CRNN"
+    "CRNNBase"
 ]

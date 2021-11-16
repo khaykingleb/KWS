@@ -16,6 +16,7 @@ def train_epoch(model, optimizer, loader, log_melspec, device):
 
         # Run model # with autocast():
         logits = model(batch)
+        
         # We need probabilities so we use softmax & CE separately
         probs = F.softmax(logits, dim=-1)
         loss = F.cross_entropy(logits, labels)

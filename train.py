@@ -2,12 +2,14 @@ import torch
 from torch.utils.data import DataLoader
 
 from IPython.display import clear_output
+
+import argparse
 from collections import defaultdict
 
 import matplotlib.pyplot as plt
 plt.style.use("ggplot")
 
-from configs.config import Config
+from configs import *
 
 from kws.datasets import SpeechCommandDataset
 from kws.augmentations import WaveAugs, LogMelSpec
@@ -16,13 +18,11 @@ from kws.collate_fn import Collator
 from kws.sampler.sampler import get_sampler
 from kws.utils.seed_everything import seed_everything
 
-from kws.models import CRNN
+from kws.models import *
 from kws.trainer import *
 
 
-def main():
-    config = Config()
-
+def main(config):
     seed_everything(seed=config.seed)
 
     if config.verbose:
@@ -66,7 +66,10 @@ def main():
     melspec_train = LogMelSpec(is_train=True, config=config)
     melspec_val = LogMelSpec(is_train=False, config=config)
 
-    model = CRNN(config).to(config.device)
+    if config.model_type == "base":
+        model = CRNNBase(config).to(config.device)
+    else:
+        raise ValueError("Error in model type definition.")
 
     history = defaultdict(list)
 
@@ -91,6 +94,23 @@ def main():
         if config.verbose:
             print(f"Epoch {i}: AUC_FA_FR = {auc_fa_fr}")
 
- 
+
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="PyTorch Template")
+
+    parser.add_argument("-m",
+                        "--model",
+                        metavar="model",
+                        default=None,
+                        required=True,
+                        type=str,
+                        help="model type")
+
+    args = parser.parse_args()
+
+    if args.model == "base":
+        config = ConfigBase()
+    else:
+        raise NotImplementedError()
+
+    main(config)

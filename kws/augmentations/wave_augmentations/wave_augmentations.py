@@ -2,12 +2,10 @@ import torchaudio
 import torch
 from torch import Tensor
 
-from configs.config import Config
-
 
 class WaveAugs:
 
-    def __init__(self, config: Config):
+    def __init__(self, config):
         self.background_noises = [
             'KWS/data/speech_commands/_background_noise_/white_noise.wav',
             'KWS/data/speech_commands/_background_noise_/dude_miaowing.wav',
