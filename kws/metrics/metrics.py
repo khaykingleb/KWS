@@ -1,8 +1,6 @@
 import torch
 import numpy as np
 
-import matplotlib as plt
-
 
 def count_FA_FR(preds, labels):
     """
@@ -27,8 +25,8 @@ def get_auc_FA_FR(probs, labels):
         FA, FR = count_FA_FR(preds, labels)        
         FAs.append(FA)
         FRs.append(FR)
-    plt.plot(FAs, FRs)
-    plt.show()
+    # Weplt.plot(FAs, FRs)
+    # Weplt.show()
 
     # ~ area under curve using trapezoidal rule
     return -np.trapz(FRs, x=FAs)
