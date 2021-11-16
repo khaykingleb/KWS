@@ -1,9 +1,9 @@
 import time
 
 class Timer:
-    def __init__(self, name: str, config):
+    def __init__(self, name: str, verbose):
         self.name = name
-        self.config = config
+        self.verbose = verbose
 
     def __enter__(self):
         self.t = time.time()
@@ -12,5 +12,5 @@ class Timer:
     def __exit__(self, type, value, traceback):
         self.t = time.time() - self.t
 
-        if self.config.verbose:
+        if self.verbose:
             print(f"{self.name.capitalize()} model's elapsed time: {self.t:.2f}")
