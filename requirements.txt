@@ -4,6 +4,7 @@ numpy
 pandas
 tqdm
 matplotlib
+thop
 
 torchaudio~=0.9.1
 librosa
