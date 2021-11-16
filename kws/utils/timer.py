@@ -13,4 +13,5 @@ class Timer:
         self.t = time.time() - self.t
 
         if self.verbose:
-            print(f"{self.name.capitalize()} model's elapsed time: {self.t:.2f}")
+            print(f"{self.name.capitalize()} model:")
+            print(f"Elapsed time = {self.t:.2f} seconds.")

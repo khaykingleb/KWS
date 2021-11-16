@@ -5,6 +5,7 @@ from IPython.display import clear_output
 
 import argparse
 from collections import defaultdict
+from thop import profile
 
 import matplotlib.pyplot as plt
 plt.style.use("ggplot")
@@ -24,7 +25,7 @@ def main(config):
     seed_everything(seed=config.seed)
 
     if config.verbose:
-        print(f"The training proccess will be performed on {config.device}.")
+        print(f"The training process will be performed on {config.device}.")
 
     # Load the data
     dataset = SpeechCommandDataset(path_to_dir=config.path_to_data, keywords=config.keyword)
@@ -76,6 +77,9 @@ def main(config):
         lr=config.learning_rate,
         weight_decay=config.weight_decay
     )
+    
+    if config.verbose:
+        print("The training process is started.")
 
     with Timer(name=config.model_type, verbose=config.verbose) as _:
         for i in range(config.num_epochs):
@@ -91,11 +95,13 @@ def main(config):
             plt.show()
 
             if config.verbose:
-                print(f"Epoch {i}: AUC_FA_FR = {auc_fa_fr}")
+                print(f"Epoch {i + 1}: AUC_FA_FR = {auc_fa_fr:.6}")
     
     if config.verbose:
-        print(f"{config.model_type.capitalize()} model's number of parameters: {get_num_params(model)}.")
-        print(f"{config.model_type.capitalize()} model's size in megabytes: {get_size_in_megabytes(model)}.")
+        print(f"Number of parameters = {get_num_params(model)}.")
+        macs, params = profile(model, (torch.randn(1, 1, 4)))
+        print(params)
+        print(f"Size in megabytes = {get_size_in_megabytes(model):.4}.")
 
 
 if __name__ == "__main__":
