@@ -82,25 +82,36 @@ def main(config):
         print("The training process is started.")
 
     with Timer(name=config.model_type, verbose=config.verbose) as _:
-        for i in range(config.num_epochs):
+        for epoch in range(config.num_epochs):
             train_epoch(model, optimizer, train_loader, melspec_train, config.device)
             auc_fa_fr = validation(model, val_loader, melspec_val, config.device)
+
+            if auc_fa_fr < min(history["val_auc_fa_fr"]):
+                arch = type(model).__name__
+                state = {
+                    "arch": arch,
+                    "epoch": epoch,
+                    "state_dict": model.state_dict(),
+                    "optimizer": optimizer.state_dict(),
+                    "config": config
+                }
+                best_path = str(config.path_to_save / f"{config.model_type}_best.pth")
+                torch.save(state, best_path)
+
             history["val_auc_fa_fr"].append(auc_fa_fr)
 
             clear_output()
 
-            plt.plot(history["val_auc_fa_fr"])
+            plt.plot(range(1, config.num_epochs + 1), history["val_auc_fa_fr"])
             plt.ylabel("Metric")
             plt.xlabel("Epoch")
             plt.show()
 
             if config.verbose:
-                print(f"Epoch {i + 1}: AUC_FA_FR = {auc_fa_fr:.6}")
+                print(f"Epoch {epoch + 1}: AUC_FA_FR = {auc_fa_fr:.6}")
     
     if config.verbose:
         print(f"Number of parameters: {get_num_params(model)}.")
-        macs, params = profile(model, (torch.randn(1, 1, 1, 4)))
-        print(params)
         print(f"Size in megabytes: {get_size_in_megabytes(model):.4}.")
 
 
