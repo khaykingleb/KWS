@@ -86,8 +86,9 @@ def main(config):
     with Timer(name=config.model_type, verbose=config.verbose) as _:
         for epoch in range(config.num_epochs):
             train_epoch(model, optimizer, train_loader, melspec_train, config.device)
-            auc_fa_fr = validation(model, val_loader, melspec_val, config.device)
+            auc_fa_fr, val_losses, FAs, FRs = validation(model, val_loader, melspec_val, config.device)
             history["val_auc_fa_fr"].append(auc_fa_fr)
+            history["val_losses"].append(val_losses)
 
             if auc_fa_fr <= min(history["val_auc_fa_fr"]):
                 arch = type(model).__name__
@@ -101,12 +102,26 @@ def main(config):
                 best_path = config.path_to_save + f"{config.model_type}_best.pth"
                 torch.save(state, best_path)
 
-            clear_output()
+            clear_output(wait=True)
 
-            plt.plot(range(1, epoch + 2), history["val_auc_fa_fr"])
-            plt.ylabel("Metric")
-            plt.xlabel("Epoch")
-            plt.show()
+            fig, axes = plt.subplots(1, 3)
+            fig.set_figheight(8)
+            fig.set_figwidth(20)
+
+            axes[0][0].plot(range(1, epoch + 2), history["val_auc_fa_fr"])
+            axes[0][0].set_title("Validation AUC of FA-FR Curve")
+            axes[0][0].set_ylabel("Metric")
+            axes[0][0].set_xlabel("Epoch")
+            
+            axes[0][1].plot(range(len(history["val_losses"])), history["val_losses"])
+            axes[0][1].set_title("Validation Loss")
+            axes[0][1].set_ylabel("Loss")
+            axes[0][1].set_xlabel("Step")
+
+            axes[0][2].plot(FAs, FRs)
+            axes[0][2].set_title("FA-FR Curve on Current Epoch")
+            axes[0][2].set_ylabel("False Rejects")
+            axes[0][2].set_xlabel("False Alarms")
 
             if config.verbose:
                 print(f"Epoch {epoch + 1}: AUC_FA_FR = {auc_fa_fr:.6}")
@@ -119,9 +134,9 @@ def main(config):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="PyTorch Template")
 
-    parser.add_argument("-m",
-                        "--model",
-                        metavar="model",
+    parser.add_argument("-c",
+                        "--config",
+                        metavar="config",
                         default=None,
                         required=True,
                         type=str,
@@ -129,11 +144,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.model == "base":
-        config = ConfigBase()
-    elif args.model == "streaming":
-        config = ConfigStreaming()
-    else:
-        raise NotImplementedError()
+    main(args.config)
 
-    main(config)
+    

@@ -62,6 +62,6 @@ def validation(model, loader, log_melspec, device):
         FAs.append(FA)
         FRs.append(FR)
 
-    # area under FA/FR curve for whole loader
+    # Area under FA/FR curve for whole loader
     auc_fa_fr = get_auc_FA_FR(torch.cat(all_probs, dim=0).cpu(), all_labels)
-    return auc_fa_fr
+    return auc_fa_fr, val_losses, FAs, FRs
