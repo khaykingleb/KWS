@@ -37,7 +37,7 @@ def main(config, small_config=None):
     df_train = dataset.csv.iloc[train_indexes].reset_index(drop=True)
     df_val = dataset.csv.iloc[val_indexes].reset_index(drop=True)
 
-    train_set = SpeechCommandDataset(csv=df_train, transform=WaveAugs(config))
+    train_set = SpeechCommandDataset(csv=df_train, transform=WaveAugs())
     val_set = SpeechCommandDataset(csv=df_val)
 
     train_sampler = get_sampler(train_set.csv["label"].values)
