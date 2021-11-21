@@ -1,6 +1,6 @@
 from .configs import Config, SmallConfig
 
 __all__ = [
-    "Config"
+    "Config",
     "SmallConfig"
 ]
