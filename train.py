@@ -21,7 +21,7 @@ from kws.models import *
 from kws.trainer import *
 from kws.utils import *
 
-def main(config):
+def train(config):
     seed_everything(seed=config.seed)
 
     if config.verbose:
@@ -131,19 +131,19 @@ def main(config):
         print(f"Size in megabytes: {get_size_in_megabytes(model):.4}.")
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="PyTorch Template")
-
-    parser.add_argument("-c",
-                        "--config",
-                        metavar="config",
-                        default=None,
-                        required=True,
-                        type=str,
-                        help="model type")
-
-    args = parser.parse_args()
-
-    main(args.config)
+#if __name__ == "__main__":
+#    parser = argparse.ArgumentParser(description="PyTorch Template")
+#
+#    parser.add_argument("-c",
+#                        "--config",
+#                        metavar="config",
+#                        default=None,
+#                        required=True,
+#                        type=str,
+#                        help="model type")
+#
+#    args = parser.parse_args()
+#
+#    main(args.config)
 
     
