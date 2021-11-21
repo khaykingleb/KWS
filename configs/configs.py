@@ -5,7 +5,7 @@ import torch
 
 
 @dataclasses.dataclass
-class ConfigBase:
+class Config:
     model_type: str = "base"
 
     seed: int = 42
