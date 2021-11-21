@@ -41,7 +41,6 @@ def main(config, small_config=None):
     val_set = SpeechCommandDataset(csv=df_val)
 
     train_sampler = get_sampler(train_set.csv["label"].values)
-    val_sampler = get_sampler(val_set.csv["label"].values)
 
     train_loader = DataLoader(train_set, 
                               batch_size=config.batch_size,
@@ -55,7 +54,6 @@ def main(config, small_config=None):
                             batch_size=config.batch_size,
                             shuffle=False, 
                             collate_fn=Collator(),
-                            sampler=val_sampler,
                             num_workers=config.num_workers, 
                             pin_memory=True)
 
