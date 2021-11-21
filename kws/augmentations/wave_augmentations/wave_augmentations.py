@@ -7,12 +7,12 @@ class WaveAugs:
 
     def __init__(self):
         self.background_noises = [
-            'KWS/speech_commands/_background_noise_/white_noise.wav',
-            'KWS/speech_commands/_background_noise_/dude_miaowing.wav',
-            'KWS/speech_commands/_background_noise_/doing_the_dishes.wav',
-            'KWS/speech_commands/_background_noise_/exercise_bike.wav',
-            'KWS/speech_commands/_background_noise_/pink_noise.wav',
-            'KWS/speech_commands/_background_noise_/running_tap.wav'
+            'KWS/data/speech_commands/_background_noise_/white_noise.wav',
+            'KWS/data/speech_commands/_background_noise_/dude_miaowing.wav',
+            'KWS/data/speech_commands/_background_noise_/doing_the_dishes.wav',
+            'KWS/data/speech_commands/_background_noise_/exercise_bike.wav',
+            'KWS/data/speech_commands/_background_noise_/pink_noise.wav',
+            'KWS/data/speech_commands/_background_noise_/running_tap.wav'
         ]
 
         self.noises = [
