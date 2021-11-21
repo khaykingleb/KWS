@@ -60,7 +60,10 @@ class Config:
 @dataclasses.dataclass
 class SmallConfig:
     model_name: str = "distilled_crnn"
-    use_distillation: bool = True
+
+    num_mels: int = 40
+    num_classes: int = 2
+
     device: torch.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     path_to_load: str = "KWS/saved/streaming_crnn_best"
@@ -75,5 +78,7 @@ class SmallConfig:
     max_window_length: int = 41
     streaming_step_size: int = 1
 
+    # Distillation
+    use_distillation: bool = True
     temperature: float = 20.0
     alpha: float = 0.5
