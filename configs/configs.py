@@ -43,14 +43,17 @@ class Config:
     batch_size: int = 128
     num_epochs: int = 30
 
-    # Model
+    # Big Model
     cnn_out_channels: int = 8
     kernel_size: Tuple[int, int] = (5, 20)
     stride: Tuple[int, int] = (2, 8)
     hidden_size: int = 64
     gru_num_layers: int = 2
     bidirectional: bool = False
-    
+
+    # Small Model
+    use_distillation: bool = False
+
     # Streaming
     max_window_length: int = 41
     streaming_step_size: int = 1

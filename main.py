@@ -65,41 +65,57 @@ def main(config):
     melspec_train = LogMelSpec(is_train=True, config=config)
     melspec_val = LogMelSpec(is_train=False, config=config)
 
-    model = CRNNStreaming(config).to(config.device)
+    if config.use_distillation:
+        base_model = None
+        base_optimizer = torch.optim.Adam(
+            base_model.parameters(),
+            lr=config.learning_rate,
+            weight_decay=config.weight_decay
+        )
 
-    history = defaultdict(list)
-
-    optimizer = torch.optim.Adam(
-        model.parameters(),
-        lr=config.learning_rate,
-        weight_decay=config.weight_decay
-    )
+        additional_model = CRNNStreaming(config).to(config.device)
+        additional_optimizer = torch.optim.Adam(
+            base_model.parameters(),
+            lr=config.learning_rate,
+            weight_decay=config.weight_decay
+        )
+        
+    else:
+        base_model = CRNNStreaming(config).to(config.device)
+        base_optimizer = torch.optim.Adam(
+            base_model.parameters(),
+            lr=config.learning_rate,
+            weight_decay=config.weight_decay
+        )
     
     if config.verbose:
         print("The training process is started.")
 
+    history = defaultdict(list)
     with Timer(name=config.model_type, verbose=config.verbose) as _:
         for epoch in range(config.num_epochs):
+            if config.use_distillation:
+                distill_train_epoch(teacher_model=additional_model, teacher_optimizer=additional_optimizer,
+                                    student_model=base_model, student_optimizer=base_optimizer,
+                                    loader=train_loader, log_melspec=melspec_train, device=config.device)
+            else:
+                train_epoch(model=base_model, optimizer=base_optimizer, 
+                            loader=train_loader, log_melspec=melspec_train, device=config.device)
 
-            #if config.use_distillation:
-            #    distill_train_epoch(teacher_model)
-            #else:
-            train_epoch(model, optimizer, train_loader, melspec_train, config.device)
-
-            auc_fa_fr, val_losses, FAs, FRs = validation(model, val_loader, melspec_val, config.device)
+            auc_fa_fr, val_losses, FAs, FRs = validation(base_model, val_loader, melspec_val, config.device)
             history["val_auc_fa_fr"].append(auc_fa_fr)
             history["val_losses"].append(val_losses)
 
             if auc_fa_fr <= min(history["val_auc_fa_fr"]):
-                arch = type(model).__name__
+                arch = type(base_model).__name__
                 state = {
                     "arch": arch,
                     "epoch": epoch,
-                    "state_dict": model.state_dict(),
-                    "optimizer": optimizer.state_dict(),
+                    "state_dict": base_model.state_dict(),
+                    "optimizer": base_optimizer.state_dict(),
                     "config": config
                 }
-                best_path = config.path_to_save + f"{config.model_type}_best.pth"
+                best_path = config.path_to_save + "best_model.pth"
                 torch.save(state, best_path)
 
             clear_output(wait=True)
@@ -127,8 +143,8 @@ def main(config):
                 print(f"Epoch {epoch + 1}: AUC_FA_FR = {auc_fa_fr:.6}")
     
     if config.verbose:
-        print(f"Number of parameters: {get_num_params(model)}.")
-        print(f"Size in megabytes: {get_size_in_megabytes(model):.4}.")
+        print(f"Number of parameters: {get_num_params(base_model)}.")
+        print(f"Size in megabytes: {get_size_in_megabytes(base_model):.4}.")
 
 
 #if __name__ == "__main__":
