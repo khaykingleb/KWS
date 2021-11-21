@@ -16,9 +16,9 @@ class CRNNStreaming(CRNNBase):
         conv_output = self.conv(input).transpose(-1, -2)
         gru_output, hidden = self.gru(conv_output, hidden)
         contex_vector = self.attention(gru_output)
-        output = self.classifier(contex_vector)
+        logits = self.classifier(contex_vector)
 
-        probs = F.softmax(output, dim=-1)
+        probs = F.softmax(logits, dim=-1)
 
         return probs.detach().cpu(), hidden
     
