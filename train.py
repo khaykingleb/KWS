@@ -85,8 +85,9 @@ def main(config):
         for epoch in range(config.num_epochs):
             train_epoch(model, optimizer, train_loader, melspec_train, config.device)
             auc_fa_fr = validation(model, val_loader, melspec_val, config.device)
+            history["val_auc_fa_fr"].append(auc_fa_fr)
 
-            if auc_fa_fr < min(history["val_auc_fa_fr"]):
+            if auc_fa_fr <= min(history["val_auc_fa_fr"]):
                 arch = type(model).__name__
                 state = {
                     "arch": arch,
@@ -97,8 +98,6 @@ def main(config):
                 }
                 best_path = str(config.path_to_save / f"{config.model_type}_best.pth")
                 torch.save(state, best_path)
-
-            history["val_auc_fa_fr"].append(auc_fa_fr)
 
             clear_output()
 
