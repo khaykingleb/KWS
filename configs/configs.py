@@ -6,6 +6,8 @@ import torch
 
 @dataclasses.dataclass
 class Config:
+    model_name: str = "streaming_crnn"
+
     seed: int = 42
     verbose: bool = True
 
@@ -14,6 +16,7 @@ class Config:
 
     path_to_data: str = "KWS/data/speech_commands"
     path_to_save: str = "KWS/saved/"
+    path_to_load: str = "KWS/saved/streaming_crnn_best"
     
     # Data processing: General
     keyword: str = "sheila"
@@ -53,6 +56,8 @@ class Config:
 
     # Small Model
     use_distillation: bool = False
+    temperature: float = 20.0
+    alpha: float = 0.5
 
     # Streaming
     max_window_length: int = 41

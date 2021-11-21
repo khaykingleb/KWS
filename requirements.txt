@@ -1,12 +1,6 @@
 torch
 torchvision
-numpy
-pandas
-tqdm
-matplotlib
+hydra_core
+omegaconf
 thop
-
 torchaudio~=0.9.1
-librosa
-torch_audiomentations
-wandb

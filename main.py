@@ -3,7 +3,9 @@ from torch.utils.data import DataLoader
 
 from IPython.display import clear_output
 
-import argparse
+#import hydra
+#from omegaconf import DictConfig
+
 from collections import defaultdict
 from thop import profile
 
@@ -21,7 +23,8 @@ from kws.models import *
 from kws.trainer import *
 from kws.utils import *
 
-def main(config):
+#@hydra.main(config_path="../config", config_name="config")
+def main(config):#: DictConfig):
     seed_everything(seed=config.seed)
 
     if config.verbose:
@@ -67,22 +70,18 @@ def main(config):
 
     if config.use_distillation:
         base_model = None
-        base_optimizer = torch.optim.Adam(
+        optimizer = torch.optim.Adam(
             base_model.parameters(),
             lr=config.learning_rate,
             weight_decay=config.weight_decay
         )
 
         additional_model = CRNNStreaming(config).to(config.device)
-        additional_optimizer = torch.optim.Adam(
-            base_model.parameters(),
-            lr=config.learning_rate,
-            weight_decay=config.weight_decay
-        )
+        additional_model.load_state_dict(torch.load(config.path_to_load)["state_dict"])
         
     else:
         base_model = CRNNStreaming(config).to(config.device)
-        base_optimizer = torch.optim.Adam(
+        optimizer = torch.optim.Adam(
             base_model.parameters(),
             lr=config.learning_rate,
             weight_decay=config.weight_decay
@@ -95,11 +94,12 @@ def main(config):
     with Timer(verbose=config.verbose):
         for epoch in range(config.num_epochs):
             if config.use_distillation:
-                distill_train_epoch(teacher_model=additional_model, teacher_optimizer=additional_optimizer,
-                                    student_model=base_model, student_optimizer=base_optimizer,
-                                    loader=train_loader, log_melspec=melspec_train, device=config.device)
+                distill_train_epoch(teacher_model=additional_model, student_model=base_model,
+                                    optimizer=optimizer, loader=train_loader, 
+                                    log_melspec=melspec_train, device=config.device,
+                                    temperature=config.temperature, alpha = config.alpha)
             else:
-                train_epoch(model=base_model, optimizer=base_optimizer, 
+                train_epoch(model=base_model, optimizer=optimizer, 
                             loader=train_loader, log_melspec=melspec_train, device=config.device)
 
             auc_fa_fr = validation(base_model, val_loader, melspec_val, config.device)
@@ -111,10 +111,10 @@ def main(config):
                     "arch": arch,
                     "epoch": epoch,
                     "state_dict": base_model.state_dict(),
-                    "optimizer": base_optimizer.state_dict(),
+                    "optimizer": optimizer.state_dict(),
                     "config": config
                 }
-                best_path = config.path_to_save + "best_model.pth"
+                best_path = config.path_to_save + f"{config.model_name}_best.pth"
                 torch.save(state, best_path)
 
             clear_output()
@@ -135,19 +135,4 @@ def main(config):
 
 
 #if __name__ == "__main__":
-#    parser = argparse.ArgumentParser(description="PyTorch Template")
-#
-#    parser.add_argument("-c",
-#                        "--config",
-#                        metavar="config",
-#                        default=None,
-#                        required=True,
-#                        type=str,
-#                        help="model type")
-#
-#    args = parser.parse_args()
-#
-#    main(args.config)
-# 
-# USE YAML FILES!
-    
+#    main()
