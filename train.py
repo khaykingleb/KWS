@@ -86,6 +86,9 @@ def main(config):
     with Timer(name=config.model_type, verbose=config.verbose) as _:
         for epoch in range(config.num_epochs):
             train_epoch(model, optimizer, train_loader, melspec_train, config.device)
+
+            distill_train_epoch()
+
             auc_fa_fr, val_losses, FAs, FRs = validation(model, val_loader, melspec_val, config.device)
             history["val_auc_fa_fr"].append(auc_fa_fr)
             history["val_losses"].append(val_losses)
@@ -105,23 +108,23 @@ def main(config):
             clear_output(wait=True)
 
             fig, axes = plt.subplots(1, 3)
-            fig.set_figheight(8)
-            fig.set_figwidth(20)
+            fig.set_figheight(6)
+            fig.set_figwidth(16)
 
-            axes[0][0].plot(range(1, epoch + 2), history["val_auc_fa_fr"])
-            axes[0][0].set_title("Validation AUC of FA-FR Curve")
-            axes[0][0].set_ylabel("Metric")
-            axes[0][0].set_xlabel("Epoch")
-            
-            axes[0][1].plot(range(len(history["val_losses"])), history["val_losses"])
-            axes[0][1].set_title("Validation Loss")
-            axes[0][1].set_ylabel("Loss")
-            axes[0][1].set_xlabel("Step")
+            axes[0].plot(range(1, epoch + 2), history["val_auc_fa_fr"])
+            axes[0].set_title("Validation AUC of FA-FR Curve")
+            axes[0].set_ylabel("Metric")
+            axes[0].set_xlabel("Epoch")
 
-            axes[0][2].plot(FAs, FRs)
-            axes[0][2].set_title("FA-FR Curve on Current Epoch")
-            axes[0][2].set_ylabel("False Rejects")
-            axes[0][2].set_xlabel("False Alarms")
+            axes[1].plot(range(len(history["val_losses"])), history["val_losses"])
+            axes[1].set_title("Validation Loss")
+            axes[1].set_ylabel("Loss")
+            axes[1].set_xlabel("Step")
+
+            axes[2].plot(FAs, FRs)
+            axes[2].set_title("FA-FR Curve on Current Epoch")
+            axes[2].set_ylabel("False Rejects")
+            axes[2].set_xlabel("False Alarms")
 
             if config.verbose:
                 print(f"Epoch {epoch + 1}: AUC_FA_FR = {auc_fa_fr:.6}")
@@ -145,5 +148,6 @@ def main(config):
 #    args = parser.parse_args()
 #
 #    main(args.config)
-
+# 
+# USE YAML FILES!
     
