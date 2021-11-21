@@ -45,7 +45,6 @@ def validation(model, loader, log_melspec, device):
         batch = log_melspec(batch)
 
         output = model(batch)
-
         # We need probabilities so we use softmax & CE separately
         probs = F.softmax(output, dim=-1)
         loss = F.cross_entropy(output, labels)
@@ -63,6 +62,6 @@ def validation(model, loader, log_melspec, device):
         FAs.append(FA)
         FRs.append(FR)
 
-    # Area under FA/FR curve for whole loader
+    # area under FA/FR curve for whole loader
     auc_fa_fr = get_auc_FA_FR(torch.cat(all_probs, dim=0).cpu(), all_labels)
     return auc_fa_fr

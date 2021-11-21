@@ -1,5 +1,6 @@
-from .configs import ConfigBase
+from .configs import ConfigBase, ConfigStreaming
 
 __all__ = [
-    "ConfigBase"
+    "ConfigBase",
+    "ConfigStreaming"
 ]
