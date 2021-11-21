@@ -7,8 +7,7 @@ import torch
 @dataclasses.dataclass
 class Config:
     model_name: str = "streaming_crnn"
-
-    seed: int = 42
+    seed: int = 100
     verbose: bool = True
 
     num_workers: int = 2
@@ -46,7 +45,7 @@ class Config:
     batch_size: int = 128
     num_epochs: int = 30
 
-    # Big Model
+    # Model
     cnn_out_channels: int = 8
     kernel_size: Tuple[int, int] = (5, 20)
     stride: Tuple[int, int] = (2, 8)
@@ -54,11 +53,24 @@ class Config:
     gru_num_layers: int = 2
     bidirectional: bool = False
 
-    # Small Model
-    use_distillation: bool = False
-    temperature: float = 20.0
-    alpha: float = 0.5
-
     # Streaming
     max_window_length: int = 41
     streaming_step_size: int = 1
+
+
+@dataclasses.dataclass
+class SmallConfig:
+    model_name: str = "distilled_crnn"
+    use_distillation: bool = True
+    # Student model
+    cnn_out_channels: int = 5
+    kernel_size: Tuple[int, int] = (5, 20)
+    stride: Tuple[int, int] = (2, 8)
+    hidden_size: int = 20
+    gru_num_layers: int = 1
+    bidirectional: bool = False
+    max_window_length: int = 41
+    streaming_step_size: int = 1
+
+    temperature: float = 20.0
+    alpha: float = 0.5

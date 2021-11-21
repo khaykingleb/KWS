@@ -3,9 +3,6 @@ from torch.utils.data import DataLoader
 
 from IPython.display import clear_output
 
-#import hydra
-#from omegaconf import DictConfig
-
 from collections import defaultdict
 from thop import profile
 
@@ -23,8 +20,8 @@ from kws.models import *
 from kws.trainer import *
 from kws.utils import *
 
-#@hydra.main(config_path="../config", config_name="config")
-def main(config):#: DictConfig):
+
+def main(config, small_config=None):
     seed_everything(seed=config.seed)
 
     if config.verbose:
@@ -68,8 +65,8 @@ def main(config):#: DictConfig):
     melspec_train = LogMelSpec(is_train=True, config=config)
     melspec_val = LogMelSpec(is_train=False, config=config)
 
-    if config.use_distillation:
-        base_model = None
+    if config.use_distillation or small_config is not None:
+        base_model = CRNNStreaming(small_config)
         optimizer = torch.optim.Adam(
             base_model.parameters(),
             lr=config.learning_rate,
@@ -132,7 +129,3 @@ def main(config):#: DictConfig):
     if config.verbose:
         print(f"Number of parameters: {get_num_params(base_model)}.")
         print(f"Size in megabytes: {get_size_in_megabytes(base_model):.4}.")
-
-
-#if __name__ == "__main__":
-#    main()
