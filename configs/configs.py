@@ -66,7 +66,7 @@ class SmallConfig:
 
     device: torch.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    path_to_load: str = "KWS/saved/streaming_crnn_best"
+    path_to_load: str = "KWS/saved/streaming_crnn_best.pth"
 
     # Student model
     cnn_out_channels: int = 5

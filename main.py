@@ -96,7 +96,7 @@ def main(config, small_config=None):
                     distill_train_epoch(teacher_model=additional_model, student_model=base_model,
                                         optimizer=optimizer, loader=train_loader, 
                                         log_melspec=melspec_train, device=config.device,
-                                        temperature=config.temperature, alpha = config.alpha)
+                                        temperature=small_config.temperature, alpha = small_config.alpha)
 
             elif small_config is None or (small_config is not None and not small_config.use_distillation):
                 train_epoch(model=base_model, optimizer=optimizer, 
