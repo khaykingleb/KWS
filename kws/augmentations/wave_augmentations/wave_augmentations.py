@@ -3,7 +3,7 @@ import torch
 from torch import distributions
 
 
-class AugsCreation:
+class WaveAugs:
 
     def __init__(self):
         self.background_noises = [
