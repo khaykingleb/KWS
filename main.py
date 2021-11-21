@@ -92,7 +92,7 @@ def main(config):
         print("The training process is started.")
 
     history = defaultdict(list)
-    with Timer(name=config.model_type, verbose=config.verbose) as _:
+    with Timer(verbose=config.verbose):
         for epoch in range(config.num_epochs):
             if config.use_distillation:
                 distill_train_epoch(teacher_model=additional_model, teacher_optimizer=additional_optimizer,

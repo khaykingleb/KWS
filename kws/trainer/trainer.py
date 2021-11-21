@@ -6,6 +6,18 @@ import torch.nn.functional as F
 from kws.metrics import count_FA_FR, get_auc_FA_FR
 
 
+def distill_train_epoch(teacher_model, teacher_optimizer, student_model, student_optimizer,
+                        loader, log_melspec, device):
+    teacher_model.train()
+    student_model.train()
+
+    for _, (batch, labels) in tqdm(enumerate(loader), total=len(loader)):
+        batch, labels = batch.to(device), labels.to(device)
+        batch = log_melspec(batch)
+
+        teacher_optimizer.zero_grad()
+
+
 def train_epoch(model, optimizer, loader, log_melspec, device):
     model.train()
     for _, (batch, labels) in tqdm(enumerate(loader), total=len(loader)):
@@ -38,7 +50,7 @@ def train_epoch(model, optimizer, loader, log_melspec, device):
 def validation(model, loader, log_melspec, device):
     model.eval()
 
-    val_losses, accs, FAs, FRs = [], [], [], []
+    val_losses, FAs, FRs = [], [], []
     all_probs, all_labels = [], []
     for _, (batch, labels) in tqdm(enumerate(loader)):
         batch, labels = batch.to(device), labels.to(device)
@@ -54,10 +66,6 @@ def validation(model, loader, log_melspec, device):
         all_probs.append(probs[:, 1].cpu())
         all_labels.append(labels.cpu())
         val_losses.append(loss.item())
-        accs.append(
-            torch.sum(argmax_probs == labels).item() /  # ???
-            torch.numel(argmax_probs)
-        )
         FA, FR = count_FA_FR(argmax_probs, labels)
         FAs.append(FA)
         FRs.append(FR)
