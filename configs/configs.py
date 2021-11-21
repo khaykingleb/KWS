@@ -15,7 +15,6 @@ class Config:
 
     path_to_data: str = "KWS/data/speech_commands"
     path_to_save: str = "KWS/saved/"
-    path_to_load: str = "KWS/saved/streaming_crnn_best"
     
     # Data processing: General
     keyword: str = "sheila"
@@ -62,6 +61,9 @@ class Config:
 class SmallConfig:
     model_name: str = "distilled_crnn"
     use_distillation: bool = True
+
+    path_to_load: str = "KWS/saved/streaming_crnn_best"
+
     # Student model
     cnn_out_channels: int = 5
     kernel_size: Tuple[int, int] = (5, 20)

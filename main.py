@@ -65,16 +65,17 @@ def main(config, small_config=None):
     melspec_train = LogMelSpec(is_train=True, config=config)
     melspec_val = LogMelSpec(is_train=False, config=config)
 
-    if config.use_distillation or small_config is not None:
-        base_model = CRNNStreaming(small_config)
-        optimizer = torch.optim.Adam(
-            base_model.parameters(),
-            lr=config.learning_rate,
-            weight_decay=config.weight_decay
-        )
+    if small_config is not None:
+        if small_config.use_distillation:
+            base_model = CRNNStreaming(small_config)
+            optimizer = torch.optim.Adam(
+                base_model.parameters(),
+                lr=config.learning_rate,
+                weight_decay=config.weight_decay
+            )
 
-        additional_model = CRNNStreaming(config).to(config.device)
-        additional_model.load_state_dict(torch.load(config.path_to_load)["state_dict"])
+            additional_model = CRNNStreaming(config).to(config.device)
+            additional_model.load_state_dict(torch.load(small_config.path_to_load)["state_dict"])
         
     else:
         base_model = CRNNStreaming(config).to(config.device)
@@ -90,12 +91,14 @@ def main(config, small_config=None):
     history = defaultdict(list)
     with Timer(verbose=config.verbose):
         for epoch in range(config.num_epochs):
-            if config.use_distillation:
-                distill_train_epoch(teacher_model=additional_model, student_model=base_model,
-                                    optimizer=optimizer, loader=train_loader, 
-                                    log_melspec=melspec_train, device=config.device,
-                                    temperature=config.temperature, alpha = config.alpha)
-            else:
+            if small_config is not None:
+                if small_config.use_distillation:
+                    distill_train_epoch(teacher_model=additional_model, student_model=base_model,
+                                        optimizer=optimizer, loader=train_loader, 
+                                        log_melspec=melspec_train, device=config.device,
+                                        temperature=config.temperature, alpha = config.alpha)
+
+            elif small_config is None or (small_config is not None and not small_config.use_distillation):
                 train_epoch(model=base_model, optimizer=optimizer, 
                             loader=train_loader, log_melspec=melspec_train, device=config.device)
 
