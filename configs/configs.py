@@ -43,7 +43,7 @@ class ConfigBase:
 
     # Training
     batch_size: int = 128
-    num_epochs: int = 20
+    num_epochs: int = 30
 
     # Model
     cnn_out_channels: int = 8
