@@ -1,6 +1,6 @@
-from .configs import Config, DistilledConfig
+from .configs import Config, SmallConfig
 
 __all__ = [
     "Config"
-    "DistilledConfig"
+    "SmallConfig"
 ]
