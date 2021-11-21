@@ -139,6 +139,8 @@ def main(config):
             axes[2].set_ylabel("False Rejects")
             axes[2].set_xlabel("False Alarms")
 
+            plt.show()
+
             if config.verbose:
                 print(f"Epoch {epoch + 1}: AUC_FA_FR = {auc_fa_fr:.6}")
     
