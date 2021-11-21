@@ -10,7 +10,7 @@ def distill_train_epoch(teacher_model, student_model, optimizer, loader, log_mel
                         temperature, alpha):
 
     def weighted_loss(student_logits, teacher_probs, labels, alpha):
-        distillation_loss = torch.nn.MSELoss(student_logits, teacher_probs)
+        distillation_loss = F.mse_loss(student_logits, teacher_probs)
         student_loss = F.cross_entropy(student_logits, labels)
         return alpha * distillation_loss + (1 - alpha) * student_loss
 
