@@ -1,4 +1,5 @@
 import torch
+import torch.nn.functional as F
 
 from kws.models import CRNNBase
 

@@ -64,8 +64,8 @@ class ConfigStreaming:
     num_workers: int = 2
     device: torch.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    path_to_data: str = "data/speech_commands"
-    path_to_save: str = "saved/"
+    path_to_data: str = "KWS/data/speech_commands"
+    path_to_save: str = "KWS/saved/"
     
     # Data processing: General
     keyword: str = "sheila"
