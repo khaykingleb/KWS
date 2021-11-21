@@ -96,7 +96,7 @@ def main(config):
                     "optimizer": optimizer.state_dict(),
                     "config": config
                 }
-                best_path = str(config.path_to_save / f"{config.model_type}_best.pth")
+                best_path = config.path_to_save + f"{config.model_type}_best.pth"
                 torch.save(state, best_path)
 
             clear_output()
