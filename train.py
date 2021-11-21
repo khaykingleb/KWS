@@ -101,7 +101,7 @@ def main(config):
 
             clear_output()
 
-            plt.plot(range(1, epoch + 1), history["val_auc_fa_fr"])
+            plt.plot(range(1, epoch + 2), history["val_auc_fa_fr"])
             plt.ylabel("Metric")
             plt.xlabel("Epoch")
             plt.show()
