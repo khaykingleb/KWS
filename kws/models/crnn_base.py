@@ -2,7 +2,7 @@ import torch
 from torch import nn
 
 
-class AttentionBase(nn.Module):
+class Attention(nn.Module):
 
     def __init__(self, hidden_size: int):
         super().__init__()
@@ -44,7 +44,7 @@ class CRNNBase(nn.Module):
             batch_first=True
         )
 
-        self.attention = AttentionBase(config.hidden_size)
+        self.attention = Attention(config.hidden_size)
         self.classifier = nn.Linear(config.hidden_size, config.num_classes)
     
     def forward(self, input):
