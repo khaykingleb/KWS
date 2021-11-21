@@ -61,6 +61,7 @@ class Config:
 class SmallConfig:
     model_name: str = "distilled_crnn"
     use_distillation: bool = True
+    device: torch.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     path_to_load: str = "KWS/saved/streaming_crnn_best"
 
