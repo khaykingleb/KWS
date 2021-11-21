@@ -102,9 +102,8 @@ def main(config):
                 train_epoch(model=base_model, optimizer=base_optimizer, 
                             loader=train_loader, log_melspec=melspec_train, device=config.device)
 
-            auc_fa_fr, val_losses, FAs, FRs = validation(base_model, val_loader, melspec_val, config.device)
+            auc_fa_fr = validation(base_model, val_loader, melspec_val, config.device)
             history["val_auc_fa_fr"].append(auc_fa_fr)
-            history["val_losses"].append(val_losses)
 
             if auc_fa_fr <= min(history["val_auc_fa_fr"]):
                 arch = type(base_model).__name__
@@ -118,26 +117,12 @@ def main(config):
                 best_path = config.path_to_save + "best_model.pth"
                 torch.save(state, best_path)
 
-            clear_output(wait=True)
+            clear_output()
 
-            fig, axes = plt.subplots(1, 3)
-            fig.set_figheight(6)
-            fig.set_figwidth(16)
-
-            axes[0].plot(range(1, epoch + 2), history["val_auc_fa_fr"])
-            axes[0].set_title("Validation AUC of FA-FR Curve")
-            axes[0].set_ylabel("Metric")
-            axes[0].set_xlabel("Epoch")
-
-            axes[1].plot(range(len(history["val_losses"])), history["val_losses"])
-            axes[1].set_title("Validation Loss")
-            axes[1].set_ylabel("Loss")
-            axes[1].set_xlabel("Step")
-
-            axes[2].plot(FAs, FRs)
-            axes[2].set_title("FA-FR Curve on Current Epoch")
-            axes[2].set_ylabel("False Rejects")
-            axes[2].set_xlabel("False Alarms")
+            plt.plot(range(1, epoch + 2), history["val_auc_fa_fr"])
+            plt.title("Validation AUC of FA-FR Curve")
+            plt.ylabel("Metric")
+            plt.xlabel("Epoch")
 
             plt.show()
 
