@@ -68,7 +68,7 @@ def main(config):
     if config.model_type == "base":
         model = CRNNBase(config).to(config.device)
     elif config.model_type == "streaming":
-        model = StreamingCRNN(config).to(config.device)
+        model = CRNNStreaming(config).to(config.device)
     else:
         raise ValueError("Error in model type definition.")
 

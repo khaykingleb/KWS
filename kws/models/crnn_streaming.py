@@ -3,7 +3,7 @@ import torch
 from kws.models import CRNNBase
 
 
-class StreamingCRNN(CRNNBase):
+class CRNNStreaming(CRNNBase):
     
     def __init__(self, config):
         super().__init__(config)
