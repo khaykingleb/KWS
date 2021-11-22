@@ -2,6 +2,8 @@ import random
 import os
 import numpy as np
 import torch
+from thop import profile
+
 
 def seed_everything(seed: int = 42):
     random.seed(seed)
@@ -13,10 +15,6 @@ def seed_everything(seed: int = 42):
     torch.backends.cudnn.enabled = False
     torch.backends.cudnn.deterministic = True
     os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:2"
-
-def get_num_params(model):
-    num_params = sum([p.numel() for p in model.parameters() if p.requires_grad])
-    return num_params
 
 def get_size_in_megabytes(model):
     num_params = sum([p.numel() for p in model.parameters() if p.requires_grad])

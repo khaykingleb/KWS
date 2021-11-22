@@ -20,6 +20,8 @@ from kws.models import *
 from kws.trainer import *
 from kws.utils import *
 
+THRESHOLD = 5e-5 * 1.1
+
 
 def main(config, small_config=None):
     seed_everything(seed=config.seed)
@@ -126,7 +128,16 @@ def main(config, small_config=None):
 
             if config.verbose:
                 print(f"Epoch {epoch + 1}: AUC_FA_FR = {auc_fa_fr:.6}")
+            
+            if auc_fa_fr <= THRESHOLD:
+                break
     
+    macs, num_params = profile(base_model, torch.zeros(1, 1, 40, 50), verbose=False)
+    size = get_size_in_megabytes(base_model)
+
     if config.verbose:
-        print(f"Number of parameters: {get_num_params(base_model)}.")
-        print(f"Size in megabytes: {get_size_in_megabytes(base_model):.4}.")
+        print(f"MACs: {macs}.")
+        print(f"Parameters: {num_params}.")
+        print(f"Size in megabytes: {size:.4}.")
+    
+    return macs, num_params, size
