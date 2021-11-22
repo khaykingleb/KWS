@@ -1,4 +1,6 @@
 import torch
+import torch.nn as nn
+import torch.quantization
 from torch.utils.data import DataLoader
 
 from IPython.display import clear_output
@@ -89,7 +91,7 @@ def main(config, small_config=None):
         print("The training process is started.")
 
     history = defaultdict(list)
-    with Timer(verbose=config.verbose):
+    with Timer(verbose=config.verbose) as timer:
         for epoch in range(config.num_epochs):
             if small_config is not None:
                 if small_config.use_distillation:
@@ -129,16 +131,24 @@ def main(config, small_config=None):
             if config.verbose:
                 print(f"Epoch {epoch + 1}: AUC_FA_FR = {auc_fa_fr:.6}")
             
-            if auc_fa_fr <= THRESHOLD:
+            if config.model_name != "base_2x64" and auc_fa_fr <= THRESHOLD:
                 print("Achieved the threshold successively.")
                 break
     
     macs, num_params = profile(base_model, torch.zeros(1, 1, 40, 50).to(config.device), verbose=False)
     size = get_size_in_megabytes(base_model)
+    time = timer.t
+
+    result = {
+        "model": config.model_name,
+        "macs": macs, 
+        "num_params": num_params,
+        "time": time
+    }
 
     if config.verbose:
         print(f"MACs: {macs}.")
         print(f"Parameters: {num_params}.")
-        print(f"Size in megabytes: {size:.4}.")
+        print(f"Size in megabytes: {size:.4}.") 
     
-    return macs, num_params, size
+    return result
