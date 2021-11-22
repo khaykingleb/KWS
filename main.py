@@ -155,8 +155,10 @@ def main(config, small_config=None):
             if config.verbose:
                 print(f"Epoch {epoch + 1}: AUC_FA_FR = {auc_fa_fr:.6}")
             
-            if config.model_name != "base_2x64" and auc_fa_fr <= THRESHOLD:
-                print("Achieved the threshold successively.")
+            if auc_fa_fr <= THRESHOLD:
+                if config.model_name == "base_2x64" and auc_fa_fr <= THRESHOLD / 1.1:
+                    print("Achieved the threshold successively.")
+                    break
                 break
 
         time = timer.get_time()
