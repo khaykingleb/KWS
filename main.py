@@ -130,6 +130,7 @@ def main(config, small_config=None):
                 print(f"Epoch {epoch + 1}: AUC_FA_FR = {auc_fa_fr:.6}")
             
             if auc_fa_fr <= THRESHOLD:
+                print("Achieved the threshold successively.")
                 break
     
     macs, num_params = profile(base_model, torch.zeros(1, 1, 40, 50), verbose=False)
