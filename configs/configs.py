@@ -56,6 +56,10 @@ class Config:
     max_window_length: int = 41
     streaming_step_size: int = 1
 
+    # Quantization
+    use_quantization = False
+    quantization_type = torch.qint8
+
 
 @dataclasses.dataclass
 class SmallConfig:
@@ -82,3 +86,7 @@ class SmallConfig:
     use_distillation: bool = True
     temperature: float = 20.0
     alpha: float = 0.5
+
+    # Quantization
+    use_quantization = False
+    quantization_type = torch.qint8
