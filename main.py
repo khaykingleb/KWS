@@ -134,10 +134,11 @@ def main(config, small_config=None):
             if config.model_name != "base_2x64" and auc_fa_fr <= THRESHOLD:
                 print("Achieved the threshold successively.")
                 break
+
+        time = timer.t
     
     macs, num_params = profile(base_model, torch.zeros(1, 1, 40, 50).to(config.device), verbose=False)
     size = get_size_in_megabytes(base_model)
-    time = timer.t
 
     result = {
         "model": config.model_name,
