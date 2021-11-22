@@ -69,17 +69,17 @@ def main(config, small_config=None):
 
     if small_config is not None:
         if small_config.use_distillation:
-            base_model = CRNNStreaming(small_config)
+            base_model = CRNNStreaming(small_config).to(config.device)
             additional_model = CRNNStreaming(config).to(config.device)
             additional_model.load_state_dict(torch.load(small_config.path_to_load)["state_dict"])
     else:
         base_model = CRNNStreaming(config).to(config.device)
     
     optimizer = torch.optim.Adam(
-            base_model.parameters(),
-            lr=config.learning_rate,
-            weight_decay=config.weight_decay
-        )
+        base_model.parameters(),
+        lr=config.learning_rate,
+        weight_decay=config.weight_decay
+    )
     
     if small_config is not None:
         if (config.use_quantization and not small_config.use_distillation) or \
