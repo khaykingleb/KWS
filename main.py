@@ -70,18 +70,12 @@ def main(config, small_config=None):
     if small_config is not None:
         if small_config.use_distillation:
             base_model = CRNNStreaming(small_config)
-            optimizer = torch.optim.Adam(
-                base_model.parameters(),
-                lr=config.learning_rate,
-                weight_decay=config.weight_decay
-            )
-
             additional_model = CRNNStreaming(config).to(config.device)
             additional_model.load_state_dict(torch.load(small_config.path_to_load)["state_dict"])
-        
     else:
         base_model = CRNNStreaming(config).to(config.device)
-        optimizer = torch.optim.Adam(
+    
+    optimizer = torch.optim.Adam(
             base_model.parameters(),
             lr=config.learning_rate,
             weight_decay=config.weight_decay
@@ -159,7 +153,9 @@ def main(config, small_config=None):
                 if config.model_name == "base_2x64" and auc_fa_fr <= THRESHOLD / 1.1:
                     print("Achieved the threshold successively.")
                     break
-                break
+                else:
+                    print("Achieved the threshold successively.")
+                    break
 
         time = timer.get_time()
     
