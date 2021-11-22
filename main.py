@@ -135,7 +135,7 @@ def main(config, small_config=None):
                 print("Achieved the threshold successively.")
                 break
 
-        time = timer.t
+        time = timer.get_time()
     
     macs, num_params = profile(base_model, torch.zeros(1, 1, 40, 50).to(config.device), verbose=False)
     size = get_size_in_megabytes(base_model)
