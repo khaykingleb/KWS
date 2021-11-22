@@ -80,30 +80,6 @@ def main(config, small_config=None):
         lr=config.learning_rate,
         weight_decay=config.weight_decay
     )
-    
-    if small_config is not None:
-        if (config.use_quantization and not small_config.use_distillation) or \
-        (not config.use_quantization and small_config.use_quantization):
-            assert config.device is "cpu"
-            base_model = torch.quantization.quantize_dynamic(
-                base_model, {nn.GRU, nn.Linear}, dtype=config.quantization_type
-            )
-
-        elif config.use_quantization and small_config.use_quantization:
-            assert config.device is "cpu" and small_config.device is "cpu"
-
-            base_model = torch.quantization.quantize_dynamic(
-                base_model, {nn.GRU, nn.Linear}, dtype=small_config.quantization_type
-            )
-            additional_model = torch.quantization.quantize_dynamic(
-                additional_model, {nn.GRU, nn.Linear}, dtype=config.quantization_type
-            )
-    
-    elif config.use_quantization:
-        assert config.device is "cpu"
-        base_model = torch.quantization.quantize_dynamic(
-            base_model, {nn.GRU, nn.Linear}, dtype=config.quantization_type
-        )
 
     if config.verbose:
         print("The training process is started.")
