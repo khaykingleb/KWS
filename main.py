@@ -170,6 +170,7 @@ def main(config, small_config=None):
         "model": config.model_name,
         "macs": macs, 
         "num_params": num_params,
+        "size": size,
         "time": time
     }
 
