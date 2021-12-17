@@ -3,6 +3,7 @@ import os
 import numpy as np
 import torch
 from thop import profile
+import tempfile
 
 
 def seed_everything(seed: int = 42):
@@ -17,6 +18,7 @@ def seed_everything(seed: int = 42):
     os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:2"
 
 def get_size_in_megabytes(model):
-    num_params = sum([p.numel() for p in model.parameters() if p.requires_grad])
-    param_size = next(model.parameters()).element_size()
-    return (num_params * param_size) / (2 ** 20)
+    with tempfile.TemporaryFile() as f:
+        torch.save(model.state_dict(), f)
+        size = f.tell() / (2 ** 20)
+    return size
